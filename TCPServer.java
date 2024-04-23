@@ -39,7 +39,7 @@ class TCPServer {
                 if (line != null && line.startsWith("NAME: ")) {                                                                            // Read in client name
                     this.clientName = line.substring(6);
                     activeClients.put(clientName, this);
-                    outToClient.writeBytes("Welcome " + clientName + "\n");
+                    outToClient.writeBytes(clientName + " is connected." + "\n");
                 }
 
                 
@@ -54,7 +54,7 @@ class TCPServer {
 
                 clientSocket.close();                                                                                                       // Close connection
                 activeClients.remove(clientName);
-                System.out.println("Client " + clientName + " disconnected.");
+                System.out.println(clientName + " is disconnected.");
             } catch (IOException e) {
                 System.err.println("Connection error with client: " + clientName);
             }
