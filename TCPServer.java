@@ -5,9 +5,9 @@ import java.util.concurrent.*;
 
 class TCPServer {
 
-    private static final int PORT = 6789;                                                                                                   // Port number
+    private static final int PORT = 5000;                                                                                                   // Port number
     private static Map<String, ConnectionHandler> activeClients = new ConcurrentHashMap<>();
-    private static ExecutorService pool = Executors.newFixedThreadPool(4);                                                         // Four clients, max
+    private static ExecutorService pool = Executors.newFixedThreadPool(4);                                                                  // Four clients, max
 
     public static void main(String argv[]) throws Exception {
         ServerSocket serverSocket = new ServerSocket(PORT);
@@ -36,7 +36,7 @@ class TCPServer {
 
                 
                 String line = inFromClient.readLine();                                                                                      // First connection
-                if (line != null && line.startsWith("NAME: ")) {                                                                     // Read in client name
+                if (line != null && line.startsWith("NAME: ")) {                                                                            // Read in client name
                     this.clientName = line.substring(6);
                     activeClients.put(clientName, this);
                     outToClient.writeBytes("Welcome " + clientName + "\n");
