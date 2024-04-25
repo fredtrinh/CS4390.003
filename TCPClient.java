@@ -40,7 +40,7 @@ class TCPClient {
         }
 
         
-        System.out.println("Exiting...");                                                                                   // Close connection
+        System.out.println("Exiting.");                                                                                     // Close connection
         outToServer.writeBytes("QUIT\n");                                                                                   // Send quit command to server
         clientSocket.close();                                                                                               // Close socket
         System.out.println("Connection closed.");

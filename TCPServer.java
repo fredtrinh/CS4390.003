@@ -46,7 +46,7 @@ class TCPServer {
                     this.loginTime = System.currentTimeMillis();                                                                                        // Store client login time
                     this.clientName = line.substring(6);                                                                                                // Store client name
                     activeClients.put(clientName, this);
-                    System.out.println(dtf.format(LocalDateTime.now()) + clientName + " is connected.");
+                    System.out.println(dtf.format(LocalDateTime.now()) + " - " + clientName + " is connected.");
                     outToClient.writeBytes("Welcome " + clientName + "\n");
                 }
                 
@@ -64,7 +64,7 @@ class TCPServer {
                 clientSocket.close();                                                                                                                   // Close connection
                 activeClients.remove(clientName);
                 int connectionTime = (int) ((System.currentTimeMillis() - loginTime) / 1000);                                                           // Total time connected
-                System.out.println(dtf.format(LocalDateTime.now()) + clientName + " is disconnected. (" + connectionTime + " s)");
+                System.out.println(dtf.format(LocalDateTime.now()) + " - " + clientName + " is disconnected. (" + connectionTime + " s)");
             } catch (IOException e) {
                 System.err.println("Connection error with: " + clientName);
             }
