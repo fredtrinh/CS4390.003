@@ -2,6 +2,10 @@ import java.io.*;
 import java.net.*;
 import java.util.*;
 import java.util.concurrent.*;
+import java.text.*;
+import java.time.format.DateTimeFormatter;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 class TCPServer {
 
@@ -21,6 +25,7 @@ class TCPServer {
     }
 
     private static class ConnectionHandler implements Runnable {
+        private long loginTime;
         private Socket clientSocket;
         private String clientName;
 
@@ -34,38 +39,43 @@ class TCPServer {
                 BufferedReader inFromClient = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));                     // Input socket
                 DataOutputStream outToClient = new DataOutputStream(clientSocket.getOutputStream());                                        // Output socket
 
-                
+                DateTimeFormatter dtf = DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm:ss");                                                 // Current local date and time formatting
+
                 String line = inFromClient.readLine();                                                                                      // First connection
                 if (line != null && line.startsWith("NAME: ")) {                                                                            // Read in client name
-                    this.clientName = line.substring(6);
+                    this.loginTime = System.currentTimeMillis();                                                                            // Store client login time
+                    this.clientName = line.substring(6);                                                                                    // Store client name
                     activeClients.put(clientName, this);
-                    outToClient.writeBytes(clientName + " is connected." + "\n");
+                    System.out.println(dtf.format(LocalDateTime.now()) + " | Client " + clientName + " connected.");
+                    outToClient.writeBytes("Welcome " + clientName + "\n");
                 }
-
                 
                 while ((line = inFromClient.readLine()) != null) {                                                                          // Handle requests from client
                     if ("QUIT".equalsIgnoreCase(line)) {
                         break;
                     }
-                    String response = processRequest(line);
+
+                    String response = processRequest(line);                                                                                 // Process request
+                    System.out.println("[" + clientName + "]\tRequest processed: " + line);
                     outToClient.writeBytes(response + "\n");
-                    System.out.println("[" + clientName + "] Request processed: " + line);
+                    System.out.println("[" + clientName + "]\tResponse sent: \"" + response + "\"");
                 }
 
                 clientSocket.close();                                                                                                       // Close connection
                 activeClients.remove(clientName);
-                System.out.println(clientName + " is disconnected.");
+                int connectionTime = (int) ((System.currentTimeMillis() - loginTime) / 1000);                                               // Total time connected
+                System.out.println(dtf.format(LocalDateTime.now()) + " | Client " + clientName + " disconnected. (" + connectionTime + " s)");
             } catch (IOException e) {
                 System.err.println("Connection error with client: " + clientName);
             }
         }
 
-        private String processRequest(String request) {
-            
+        private String processRequest(String request) {                                                                                    // Handles basic calculations
             String[] parts = request.split(" ");
             if (parts.length == 3) {
                 int num1 = Integer.parseInt(parts[1]);
                 int num2 = Integer.parseInt(parts[2]);
+
                 switch (parts[0].toUpperCase()) {
                     case "ADD":
                         return "Result: " + (num1 + num2);
