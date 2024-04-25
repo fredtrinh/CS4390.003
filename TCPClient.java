@@ -19,7 +19,7 @@ class TCPClient {
 
         
         String response = inFromServer.readLine();                                                                          // Receive acknowledgement from server
-        System.out.println("Server: " + response);
+        System.out.println("[Server] " + response);
 
         
         Random rand = new Random();                                                                                         // Send 3 random math requests to server
@@ -34,10 +34,9 @@ class TCPClient {
             System.out.println("Sent: " + message);
 
             response = inFromServer.readLine();                                                                             // Print server response
-            System.out.println("Server: " + response);
-
+            System.out.println("[Server] " + response);
             
-            Thread.sleep(rand.nextInt(5000) + 1000);                                                                        // Random pause between requests
+            Thread.sleep(rand.nextInt(5000) + 3000);                                                                        // Random pause between requests
         }
 
         
